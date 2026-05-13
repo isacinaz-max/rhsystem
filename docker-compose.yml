@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  app_backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: rh_backend
+    restart: unless-stopped
+    working_dir: /var/www/backend
+    volumes:
+      - ./backend:/var/www/backend
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/local.ini
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - rh_network
+    environment:
+      - APP_ENV=local
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=rh_system
+      - DB_USERNAME=rh_user
+      - DB_PASSWORD=rh_password
+
+  app_frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: rh_frontend
+    restart: unless-stopped
+    working_dir: /app/frontend
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - app_backend
+    networks:
+      - rh_network
+
+
+  mysql:
+    image: mysql:8.0
+    container_name: rh_mysql
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: rh_system
+      MYSQL_USER: rh_user
+      MYSQL_PASSWORD: rh_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - rh_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      timeout: 20s
+      retries: 10
+
+volumes:
+  mysql_data:
+
+networks:
+  rh_network:
+    driver: bridge

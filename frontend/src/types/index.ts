@@ -5,6 +5,8 @@ export interface User {
   role: 'administrador' | 'rh' | 'gestor' | 'funcionario'
   permissions?: string[]
   is_active: boolean
+  is_super_admin?: boolean
+  company_id?: number
   employee_id?: number
   employee?: Employee
 }

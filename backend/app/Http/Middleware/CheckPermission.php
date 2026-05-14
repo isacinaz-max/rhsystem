@@ -11,7 +11,7 @@ class CheckPermission
             return response()->json(['success' => false, 'message' => 'Não autenticado'], 401);
         }
         $user = auth()->user();
-        if ($user->role === 'administrador') {
+        if ($user->is_super_admin || $user->role === 'administrador') {
             return $next($request);
         }
         $permissions = [

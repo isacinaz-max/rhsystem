@@ -28,6 +28,10 @@ class UserService
         if (!isset($data['is_active'])) {
             $data['is_active'] = true;
         }
+        if (!auth()->user()->is_super_admin) {
+            $data['company_id'] = auth()->user()->company_id;
+            $data['is_super_admin'] = false;
+        }
         if (isset($data['permissions']) && is_array($data['permissions'])) {
             $data['permissions'] = json_encode($data['permissions']);
         }
@@ -40,6 +44,9 @@ class UserService
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
+        }
+        if (!auth()->user()->is_super_admin) {
+            unset($data['is_super_admin']);
         }
         if (isset($data['permissions']) && is_array($data['permissions'])) {
             $data['permissions'] = json_encode($data['permissions']);

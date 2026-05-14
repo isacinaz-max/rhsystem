@@ -3,11 +3,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Loggable;
+use App\Traits\MultiTenant;
 class EmployeePayrollItem extends Model
 {
-    use HasFactory, Loggable;
+    use HasFactory, Loggable, MultiTenant;
     protected $fillable = [
         'employee_id',
+        'company_id',
         'benefit_id',
         'description',
         'type',

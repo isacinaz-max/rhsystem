@@ -4,9 +4,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Traits\MultiTenant;
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, MultiTenant;
     protected $fillable = [
         'name',
         'email',
@@ -16,6 +17,7 @@ class User extends Authenticatable
         'is_active',
         'company_id',
         'employee_id',
+        'is_super_admin',
     ];
     protected $hidden = [
         'password',
@@ -24,6 +26,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_active' => 'boolean',
+        'is_super_admin' => 'boolean',
         'password' => 'hashed',
         'permissions' => 'array',
     ];

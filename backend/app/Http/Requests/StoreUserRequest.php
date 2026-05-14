@@ -18,6 +18,7 @@ class StoreUserRequest extends FormRequest
             'permissions' => 'nullable|array',
             'permissions.*' => 'string|in:create,update,delete,reports',
             'is_active' => 'nullable|boolean',
+            'is_super_admin' => 'nullable|boolean',
             'company_id' => 'nullable|integer|exists:companies,id',
             'employee_id' => 'nullable|integer|exists:employees,id',
         ];

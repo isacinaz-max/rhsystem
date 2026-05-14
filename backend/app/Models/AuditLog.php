@@ -2,11 +2,13 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\MultiTenant;
 class AuditLog extends Model
 {
-    use HasFactory;
+    use HasFactory, MultiTenant;
     protected $fillable = [
         'user_id',
+        'company_id',
         'action',
         'model_type',
         'model_id',

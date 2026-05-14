@@ -18,12 +18,18 @@ class CompanyController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        if (!auth()->user()->is_super_admin) {
+            return $this->error('Acesso restrito ao super administrador', 403);
+        }
         $result = $this->companyService->list($request->all());
         return $this->paginatedSuccess($result);
     }
 
     public function store(Request $request): JsonResponse
     {
+        if (!auth()->user()->is_super_admin) {
+            return $this->error('Acesso restrito ao super administrador', 403);
+        }
         $validated = $request->validate([
             'razao_social' => 'required|string|max:255',
             'nome_fantasia' => 'nullable|string|max:255',
@@ -47,6 +53,9 @@ class CompanyController extends Controller
 
     public function show(int $id): JsonResponse
     {
+        if (!auth()->user()->is_super_admin) {
+            return $this->error('Acesso restrito ao super administrador', 403);
+        }
         $company = $this->companyService->find($id);
         if (!$company) {
             return $this->error('Empresa não encontrada', 404);
@@ -56,6 +65,9 @@ class CompanyController extends Controller
 
     public function update(Request $request, int $id): JsonResponse
     {
+        if (!auth()->user()->is_super_admin) {
+            return $this->error('Acesso restrito ao super administrador', 403);
+        }
         $company = $this->companyService->find($id);
         if (!$company) {
             return $this->error('Empresa não encontrada', 404);
@@ -88,6 +100,9 @@ class CompanyController extends Controller
 
     public function destroy(int $id): JsonResponse
     {
+        if (!auth()->user()->is_super_admin) {
+            return $this->error('Acesso restrito ao super administrador', 403);
+        }
         $company = $this->companyService->find($id);
         if (!$company) {
             return $this->error('Empresa não encontrada', 404);
@@ -98,6 +113,9 @@ class CompanyController extends Controller
 
     public function uploadLogo(Request $request, int $id): JsonResponse
     {
+        if (!auth()->user()->is_super_admin) {
+            return $this->error('Acesso restrito ao super administrador', 403);
+        }
         $company = $this->companyService->find($id);
         if (!$company) {
             return $this->error('Empresa não encontrada', 404);

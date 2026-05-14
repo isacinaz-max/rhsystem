@@ -8,6 +8,9 @@ class UserPolicy
 {
     public function before(User $user): ?bool
     {
+        if ($user->is_super_admin) {
+            return true;
+        }
         if ($user->role === 'administrador') {
             return true;
         }

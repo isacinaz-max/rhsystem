@@ -40,7 +40,7 @@ class AuthService
 
     public function me(User $user): User
     {
-        return $user->load('employee.department', 'employee.position');
+        return $user->load('employee.department', 'employee.position', 'company');
     }
 
     public function changePassword(User $user, string $currentPassword, string $newPassword): void

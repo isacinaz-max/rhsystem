@@ -7,7 +7,7 @@ interface SidebarProps {
   onClose: () => void
 }
 
-const menuItems = [
+const allMenuItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/employees', label: 'Funcionários', icon: Users },
   { path: '/departments', label: 'Departamentos', icon: Building2 },
@@ -27,6 +27,13 @@ const menuItems = [
 
 export default function Sidebar({ open, onClose }: SidebarProps) {
   const { user } = useAuth()
+
+  const menuItems = allMenuItems.filter(item => {
+    if (item.path === '/companies' || item.path === '/users') {
+      return user?.is_super_admin;
+    }
+    return true
+  })
 
   return (
     <>

@@ -70,11 +70,13 @@ class EmployeeController extends Controller
 
     public function listAll(): JsonResponse
     {
-        $employees = \App\Models\Employee::withoutGlobalScopes()
-            ->with(['department', 'position'])
+        $query = \App\Models\Employee::with(['department', 'position'])
             ->where('status', 'ativo')
-            ->orderBy('name')
-            ->get(['id', 'name', 'cpf']);
+            ->orderBy('name');
+        if (!auth()->user()->is_super_admin) {
+            $query->where('company_id', auth()->user()->company_id);
+        }
+        $employees = $query->get(['id', 'name', 'cpf', 'company_id']);
         return $this->success($employees);
     }
 }

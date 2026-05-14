@@ -14,6 +14,10 @@ class UserRepository
     {
         $query = $this->model->query();
 
+        if (!auth()->user()->is_super_admin) {
+            $query->where('company_id', auth()->user()->company_id);
+        }
+
         if (!empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
                 $q->where('name', 'like', "%{$filters['search']}%")
@@ -32,7 +36,11 @@ class UserRepository
 
     public function findById(int $id): ?User
     {
-        return $this->model->with('employee')->find($id);
+        $query = $this->model->with('employee');
+        if (!auth()->user()->is_super_admin) {
+            $query->where('company_id', auth()->user()->company_id);
+        }
+        return $query->find($id);
     }
 
     public function create(array $data): User
@@ -52,6 +60,10 @@ class UserRepository
 
     public function getAll(): Collection
     {
-        return $this->model->orderBy('name')->get();
+        $query = $this->model->orderBy('name');
+        if (!auth()->user()->is_super_admin) {
+            $query->where('company_id', auth()->user()->company_id);
+        }
+        return $query->get();
     }
 }

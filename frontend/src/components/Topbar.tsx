@@ -42,7 +42,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
 
         <div className="hidden lg:block">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Bem-vindo, {user?.name?.split(' ')[0]}
+            Bem-vindo, {user?.name?.split(' ')[0]}{user?.company ? ` - ${user?.company?.razao_social}` : ''}
           </h2>
         </div>
 

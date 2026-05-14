@@ -5,6 +5,7 @@ vendor/
 *.log
 storage/
 !storage/logs/.gitkeep
+backend/public/storage
 mysql_data/
 dist/
 build/

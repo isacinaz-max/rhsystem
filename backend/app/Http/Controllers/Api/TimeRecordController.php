@@ -128,7 +128,7 @@ class TimeRecordController extends Controller
 
         $employeeId = $filters['employee_id'] ?? $request->user()->employee_id;
         if (!$employeeId) {
-            return $this->error('Funcionário não informado', 400);
+            return $this->success(['records' => [], 'summary' => ['total_hours' => '00:00', 'overtime' => '00:00', 'expected' => '00:00']]);
         }
 
         $records = $this->timeRecordService->getMonthlyReport($employeeId, $filters['month'], $filters['year']);

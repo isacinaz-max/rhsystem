@@ -24,8 +24,9 @@ export default function TimeRecordList() {
     setLoading(true)
     try {
       const res = await timeRecordService.report({ month, year })
-      setRecords(res.data.data || [])
-      const today = res.data.data?.find((r: TimeRecord) => r.record_date === new Date().toISOString().split('T')[0])
+      const data = res.data.data?.records || []
+      setRecords(data)
+      const today = data.find((r: TimeRecord) => r.record_date === new Date().toISOString().split('T')[0])
       setTodayRecord(today || null)
     } catch { toast.error('Erro ao carregar registros') }
     finally { setLoading(false) }

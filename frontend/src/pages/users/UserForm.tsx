@@ -150,7 +150,7 @@ export default function UserForm() {
               <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">
                 {isEditing ? 'Senha (deixe em branco para manter)' : 'Senha *'}
               </label>
-              <input type="password" {...register('password', { required: !isEditing, minLength: 6 })} className="input-field" />
+              <input type="password" {...register('password', { required: !isEditing, minLength: 6 })} className="input-field" placeholder="Mínimo 6 caracteres" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Perfil *</label>

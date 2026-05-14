@@ -35,14 +35,14 @@ export default function PayrollEdit() {
         setPayroll(p)
         if (p.items) {
           setItems(p.items.map((i: PayrollItem) => ({
-            id: i.id,
-            description: i.description,
-            type: i.type,
-            calculation_type: i.calculation_type,
-            amount: Number(i.amount),
-            percentage: i.percentage ? Number(i.percentage) : undefined,
-            calculated_amount: Number(i.calculated_amount),
-          })))
+              id: i.id,
+              description: i.description,
+              type: i.type,
+              calculation_type: i.calculation_type,
+              amount: Number(i.amount),
+              percentage: i.percentage ? Number(i.percentage) : undefined,
+              calculated_amount: Number(i.calculated_amount),
+            })))
         }
       } catch { toast.error('Erro ao carregar folha') }
       finally { setLoading(false) }
@@ -135,14 +135,14 @@ export default function PayrollEdit() {
       </div>
 
       <div className="card mb-4">
-        <p className="text-sm text-slate-400 mb-1">Salário Base</p>
-        <p className="text-xl font-bold text-white">{formatCurrency(Number(payroll.base_salary))}</p>
+        <p className="text-sm text-gray-500 dark:text-slate-400 mb-1">Salário Base</p>
+        <p className="text-xl font-bold text-gray-900 dark:text-white">{formatCurrency(Number(payroll.base_salary))}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-white">Créditos</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Créditos</h3>
             <button onClick={() => addItem('credit')} className="btn-sm btn-primary flex items-center gap-1">
               <Plus className="w-3 h-3" /> Adicionar
             </button>
@@ -183,7 +183,7 @@ export default function PayrollEdit() {
 
         <div className="card">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-white">Débitos</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Débitos</h3>
             <button onClick={() => addItem('debit')} className="btn-sm btn-primary flex items-center gap-1">
               <Plus className="w-3 h-3" /> Adicionar
             </button>
@@ -226,8 +226,8 @@ export default function PayrollEdit() {
       <div className="card mt-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-400">Salário Líquido</p>
-            <p className="text-2xl font-bold text-primary-400">{formatCurrency(getTotalCredit() - getTotalDebit())}</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400">Salário Líquido</p>
+            <p className="text-2xl font-bold text-primary-400">{formatCurrency(Number(payroll.base_salary) + getTotalCredit() - getTotalDebit())}</p>
           </div>
           <button onClick={handleSave} disabled={saving} className="btn-primary flex items-center gap-2">
             {saving && <Loader2 className="w-4 h-4 animate-spin" />}

@@ -18,6 +18,8 @@ use App\Models\Recruitment;
 use App\Policies\RecruitmentPolicy;
 use App\Models\Candidate;
 use App\Policies\CandidatePolicy;
+use App\Models\User;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 class AuthServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,7 @@ class AuthServiceProvider extends ServiceProvider
         Benefit::class => BenefitPolicy::class,
         Recruitment::class => RecruitmentPolicy::class,
         Candidate::class => CandidatePolicy::class,
+        User::class => UserPolicy::class,
     ];
     public function boot(): void
     {

@@ -73,6 +73,14 @@ class PayrollRepository
             ->get();
     }
 
+    public function findByEmployeeAndPeriod(int $employeeId, int $month, int $year): ?Payroll
+    {
+        return $this->model->where('employee_id', $employeeId)
+            ->where('reference_month', $month)
+            ->where('reference_year', $year)
+            ->first();
+    }
+
     public function findByPeriod(int $month, int $year): Collection
     {
         return $this->model->where('reference_month', $month)

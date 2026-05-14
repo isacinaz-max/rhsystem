@@ -78,10 +78,29 @@ class DashboardService
             ->orderBy('month')
             ->get();
 
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+
+        $spendingByDepartment = Department::with(['employees' => function ($q) {
+            $q->where('status', 'ativo');
+        }])->get()->map(fn ($dept) => [
+            'department' => $dept->name,
+            'total' => (float) $dept->employees->sum('salary'),
+        ])->filter(fn ($item) => $item['total'] > 0)->values();
+
+        $spendingByPosition = \App\Models\Position::with(['employees' => function ($q) {
+            $q->where('status', 'ativo');
+        }])->get()->map(fn ($pos) => [
+            'position' => $pos->name,
+            'total' => (float) $pos->employees->sum('salary'),
+        ])->filter(fn ($item) => $item['total'] > 0)->values();
+
         return [
             'employees_by_department' => $employeesByDepartment,
             'salary_distribution' => $salaryDistribution,
             'monthly_hires' => $monthlyHires,
+            'spending_by_department' => $spendingByDepartment,
+            'spending_by_position' => $spendingByPosition,
         ];
     }
 

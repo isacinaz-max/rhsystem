@@ -46,6 +46,7 @@ export default function EmployeeForm() {
   const [positions, setPositions] = useState<Position[]>([])
   const [companies, setCompanies] = useState<Company[]>([])
   const [photoFile, setPhotoFile] = useState<File | null>(null)
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null)
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>()
 
@@ -64,6 +65,7 @@ export default function EmployeeForm() {
         if (isEditing) {
           const empRes = await employeeService.find(Number(id))
           const emp = empRes.data.data
+          if (emp.photo_url) setPhotoPreview(emp.photo_url)
           reset({
             name: emp.name,
             cpf: emp.cpf,
@@ -143,26 +145,26 @@ export default function EmployeeForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">Dados Pessoais</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Dados Pessoais</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Nome Completo *</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Nome Completo *</label>
               <input {...register('name', { required: true })} className="input-field" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">CPF *</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">CPF *</label>
               <input {...register('cpf', { required: true })} className="input-field" placeholder="000.000.000-00" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">RG</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">RG</label>
               <input {...register('rg')} className="input-field" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Data Nascimento</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Data Nascimento</label>
               <input type="date" {...register('birth_date')} className="input-field" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Sexo</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Sexo</label>
               <select {...register('gender')} className="input-field">
                 <option value="">Selecione</option>
                 <option value="masculino">Masculino</option>
@@ -171,7 +173,7 @@ export default function EmployeeForm() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Estado Civil</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Estado Civil</label>
               <select {...register('marital_status')} className="input-field">
                 <option value="">Selecione</option>
                 <option value="solteiro">Solteiro</option>
@@ -181,55 +183,55 @@ export default function EmployeeForm() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Email</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Email</label>
               <input type="email" {...register('email')} className="input-field" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Telefone</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Telefone</label>
               <input {...register('phone')} className="input-field" placeholder="(00) 00000-0000" />
             </div>
           </div>
         </div>
 
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">Endereço</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Endereço</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">CEP</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">CEP</label>
               <input {...register('zip_code')} className="input-field" placeholder="00000-000" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Cidade</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Cidade</label>
               <input {...register('city')} className="input-field" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Estado</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Estado</label>
               <input {...register('state')} className="input-field" maxLength={2} placeholder="UF" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Bairro</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Bairro</label>
               <input {...register('neighborhood')} className="input-field" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Logradouro</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Logradouro</label>
               <input {...register('street')} className="input-field" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Número</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Número</label>
               <input {...register('number')} className="input-field" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Complemento</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Complemento</label>
               <input {...register('complement')} className="input-field" />
             </div>
           </div>
         </div>
 
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">Dados Profissionais</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Dados Profissionais</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Empresa *</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Empresa *</label>
               <select {...register('company_id', { required: true })} className="input-field">
                 <option value="">Selecione</option>
                 {companies.map((comp) => (
@@ -238,7 +240,7 @@ export default function EmployeeForm() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Departamento</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Departamento</label>
               <select {...register('department_id')} className="input-field">
                 <option value="">Selecione</option>
                 {departments.map((dept) => (
@@ -247,7 +249,7 @@ export default function EmployeeForm() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Cargo</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Cargo</label>
               <select {...register('position_id')} className="input-field">
                 <option value="">Selecione</option>
                 {positions.map((pos) => (
@@ -256,15 +258,15 @@ export default function EmployeeForm() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Salário (R$)</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Salário (R$)</label>
               <input type="number" step="0.01" {...register('salary')} className="input-field" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Data Admissão</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Data Admissão</label>
               <input type="date" {...register('hire_date')} className="input-field" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Status</label>
+              <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Status</label>
               <select {...register('status')} className="input-field">
                 <option value="ativo">Ativo</option>
                 <option value="afastado">Afastado</option>
@@ -274,13 +276,22 @@ export default function EmployeeForm() {
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-400 mb-1">Foto</label>
-              <input type="file" accept="image/*" onChange={(e) => setPhotoFile(e.target.files?.[0] || null)} className="input-field" />
+              {photoPreview && (
+                <div className="mb-2">
+                  <img src={photoPreview} alt="Preview" className="w-20 h-20 rounded-full object-cover bg-slate-700" />
+                </div>
+              )}
+              <input type="file" accept="image/*" onChange={(e) => {
+                const file = e.target.files?.[0] || null
+                setPhotoFile(file)
+                if (file) setPhotoPreview(URL.createObjectURL(file))
+              }} className="input-field" />
             </div>
           </div>
         </div>
 
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">Observações</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Observações</h3>
           <textarea {...register('notes')} rows={4} className="input-field" />
         </div>
 

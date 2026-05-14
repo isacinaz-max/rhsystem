@@ -23,6 +23,8 @@ import ReportList from '../pages/reports/ReportList'
 import Settings from '../pages/Settings'
 import CompanyList from '../pages/companies/CompanyList'
 import EmployeePayrollItemsPage from '../pages/employee-payroll-items/EmployeePayrollItemsPage'
+import UserList from '../pages/users/UserList'
+import UserForm from '../pages/users/UserForm'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth()
@@ -61,6 +63,9 @@ export function AppRoutes() {
         <Route path="settings" element={<Settings />} />
         <Route path="companies" element={<CompanyList />} />
         <Route path="employee-payroll-items" element={<EmployeePayrollItemsPage />} />
+        <Route path="users" element={<UserList />} />
+        <Route path="users/new" element={<UserForm />} />
+        <Route path="users/:id/edit" element={<UserForm />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

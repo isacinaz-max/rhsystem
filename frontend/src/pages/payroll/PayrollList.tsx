@@ -1,12 +1,14 @@
 import { useEffect, useState, useCallback } from 'react'
-import { FileText, Loader2 } from 'lucide-react'
+import { FileText, Loader2, Trash2 } from 'lucide-react'
 import { payrollService } from '../../services/payrollService'
 import PayrollTable from '../../components/payroll/PayrollTable'
 import PageContainer from '../../components/ui/PageContainer'
 import Card from '../../components/ui/Card'
 import CompanySelect from '../../components/company/CompanySelect'
+import EmployeeSelect from '../../components/company/EmployeeSelect'
 import { Payroll } from '../../types'
 import { formatCurrency } from '../../utils/formatters'
+import ConfirmDialog from '../../components/ui/ConfirmDialog'
 import toast from 'react-hot-toast'
 
 export default function PayrollList() {
@@ -17,21 +19,24 @@ export default function PayrollList() {
   const [month, setMonth] = useState(new Date().getMonth() + 1)
   const [year, setYear] = useState(new Date().getFullYear())
   const [companyFilter, setCompanyFilter] = useState('')
+  const [employeeFilter, setEmployeeFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [page, setPage] = useState(1)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
     try {
       const params: any = { reference_month: month, reference_year: year, page, per_page: 15 }
       if (companyFilter) params.company_id = companyFilter
+      if (employeeFilter) params.employee_id = employeeFilter
       if (statusFilter) params.payment_status = statusFilter
       const res = await payrollService.list(params)
       setPayrolls(res.data.data)
       setMeta(res.data.meta)
     } catch { toast.error('Erro ao carregar') }
     finally { setLoading(false) }
-  }, [month, year, companyFilter, statusFilter, page])
+  }, [month, year, companyFilter, employeeFilter, statusFilter, page])
 
   useEffect(() => { load() }, [load])
 
@@ -43,7 +48,10 @@ export default function PayrollList() {
   async function handleGenerate() {
     setGenerating(true)
     try {
-      await payrollService.generate({ reference_month: month, reference_year: year })
+      const payload: any = { reference_month: month, reference_year: year }
+      if (employeeFilter) payload.employee_id = employeeFilter
+      if (companyFilter) payload.company_id = companyFilter
+      await payrollService.generate(payload)
       toast.success('Folha gerada com sucesso!')
       load()
     } catch (error: any) {
@@ -73,16 +81,25 @@ export default function PayrollList() {
     } catch { toast.error('Erro ao gerar PDF') }
   }
 
+  async function handleDelete(id: number) {
+    try {
+      await payrollService.delete(id)
+      toast.success('Folha removida com sucesso')
+      load()
+    } catch { toast.error('Erro ao remover folha') }
+    finally { setDeleteId(null) }
+  }
+
   return (
     <PageContainer
       title="Folha de Pagamento"
       subtitle="Gerenciamento de folha de pagamento e holerites"
     >
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <Card><p className="text-sm text-slate-400">Total Bruto</p><p className="text-xl font-bold text-white">{formatCurrency(totalBase)}</p></Card>
-        <Card><p className="text-sm text-slate-400">Total Créditos</p><p className="text-xl font-bold text-emerald-400">{formatCurrency(totalCredit)}</p></Card>
-        <Card><p className="text-sm text-slate-400">Total Débitos</p><p className="text-xl font-bold text-red-400">{formatCurrency(totalDebit)}</p></Card>
-        <Card><p className="text-sm text-slate-400">Total Líquido</p><p className="text-xl font-bold text-primary-400">{formatCurrency(totalNet)}</p></Card>
+        <Card><p className="text-sm text-gray-500 dark:text-slate-400">Total Bruto</p><p className="text-xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalBase)}</p></Card>
+        <Card><p className="text-sm text-gray-500 dark:text-slate-400">Total Créditos</p><p className="text-xl font-bold text-emerald-400">{formatCurrency(totalCredit)}</p></Card>
+        <Card><p className="text-sm text-gray-500 dark:text-slate-400">Total Débitos</p><p className="text-xl font-bold text-red-400">{formatCurrency(totalDebit)}</p></Card>
+        <Card><p className="text-sm text-gray-500 dark:text-slate-400">Total Líquido</p><p className="text-xl font-bold text-primary-400">{formatCurrency(totalNet)}</p></Card>
       </div>
 
       <div className="card">
@@ -97,8 +114,9 @@ export default function PayrollList() {
               {[2024, 2025, 2026, 2027].map((y) => <option key={y} value={y}>{y}</option>)}
             </select>
           </div>
-          <CompanySelect value={companyFilter} onChange={(v) => { setCompanyFilter(v); setPage(1) }} placeholder="Filtrar por empresa" allOption className="w-56" />
-          <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1) }} className="input-field w-40">
+           <CompanySelect value={companyFilter} onChange={(v) => { setCompanyFilter(v); setPage(1) }} placeholder="Filtrar por empresa" allOption className="w-48" />
+          <EmployeeSelect value={employeeFilter} onChange={(v) => { setEmployeeFilter(v); setPage(1) }} placeholder="Filtrar por funcionário" className="w-48" />
+          <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1) }} className="input-field w-36">
             <option value="">Todos status</option>
             <option value="pending">Pendente</option>
             <option value="paid">Pago</option>
@@ -119,8 +137,16 @@ export default function PayrollList() {
           onPageChange={setPage}
           onMarkAsPaid={handleMarkAsPaid}
           onGeneratePdf={handleGeneratePdf}
+          onDelete={(id) => setDeleteId(id)}
         />
       </div>
+      <ConfirmDialog
+        open={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={() => deleteId && handleDelete(deleteId)}
+        title="Remover Folha"
+        message="Tem certeza que deseja remover esta folha de pagamento?"
+      />
     </PageContainer>
   )
 }

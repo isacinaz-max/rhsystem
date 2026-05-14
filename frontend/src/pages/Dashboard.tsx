@@ -101,6 +101,20 @@ export default function Dashboard() {
             data={charts.salary_distribution.map(item => ({ name: item.range, value: item.count }))}
           />
         )}
+        {charts?.spending_by_department && charts.spending_by_department.length > 0 && (
+          <BarChartCard
+            title="Gastos por Departamento"
+            data={charts.spending_by_department.map(item => ({ name: item.department, value: item.total }))}
+            formatValue={formatCurrency}
+          />
+        )}
+        {charts?.spending_by_position && charts.spending_by_position.length > 0 && (
+          <BarChartCard
+            title="Gastos por Cargo"
+            data={charts.spending_by_position.map(item => ({ name: item.position, value: item.total }))}
+            formatValue={formatCurrency}
+          />
+        )}
       </div>
     </PageContainer>
   )

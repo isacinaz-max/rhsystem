@@ -103,35 +103,35 @@ export default function PayrollDetail() {
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
         <Card>
-          <p className="text-sm text-slate-400">Salário Base</p>
-          <p className="text-xl font-bold text-white">{formatCurrency(Number(payroll.base_salary))}</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Salário Base</p>
+          <p className="text-xl font-bold text-gray-900 dark:text-white">{formatCurrency(Number(payroll.base_salary))}</p>
         </Card>
         <Card>
-          <p className="text-sm text-slate-400">Total Créditos</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Total Créditos</p>
           <p className="text-xl font-bold text-emerald-400">{formatCurrency(Number(payroll.total_credit || 0))}</p>
         </Card>
         <Card>
-          <p className="text-sm text-slate-400">Total Débitos</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Total Débitos</p>
           <p className="text-xl font-bold text-red-400">{formatCurrency(Number(payroll.total_debit || 0))}</p>
         </Card>
         <Card>
-          <p className="text-sm text-slate-400">Salário Líquido</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Salário Líquido</p>
           <p className="text-xl font-bold text-primary-400">{formatCurrency(Number(payroll.net_salary))}</p>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">Créditos</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Créditos</h3>
           {credits.length === 0 ? (
-            <p className="text-slate-400 text-sm">Nenhum crédito</p>
+            <p className="text-gray-500 dark:text-slate-400 text-sm">Nenhum crédito</p>
           ) : (
             <div className="space-y-3">
               {credits.map((item: PayrollItem) => (
-                <div key={item.id} className="flex items-center justify-between py-2 border-b border-slate-700 last:border-0">
+                <div key={item.id} className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-slate-700 last:border-0">
                   <div>
-                    <p className="text-white font-medium">{item.description}</p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-gray-900 dark:text-white font-medium">{item.description}</p>
+                    <p className="text-xs text-gray-500 dark:text-slate-400">
                       {item.calculation_type === 'fixed'
                         ? `Valor fixo: ${formatCurrency(Number(item.amount))}`
                         : `${item.percentage}% ${item.amount > 0 ? `de ${formatCurrency(Number(item.amount))}` : 'do salário base'}`
@@ -141,8 +141,8 @@ export default function PayrollDetail() {
                   <p className="text-emerald-400 font-semibold">{formatCurrency(Number(item.calculated_amount))}</p>
                 </div>
               ))}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-600">
-                <p className="text-white font-semibold">Total Créditos</p>
+              <div className="flex items-center justify-between pt-2 border-t border-gray-300 dark:border-slate-600">
+                <p className="text-gray-900 dark:text-white font-semibold">Total Créditos</p>
                 <p className="text-emerald-400 font-bold text-lg">{formatCurrency(Number(payroll.total_credit || 0))}</p>
               </div>
             </div>
@@ -150,16 +150,16 @@ export default function PayrollDetail() {
         </div>
 
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">Débitos</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Débitos</h3>
           {debits.length === 0 ? (
-            <p className="text-slate-400 text-sm">Nenhum débito</p>
+            <p className="text-gray-500 dark:text-slate-400 text-sm">Nenhum débito</p>
           ) : (
             <div className="space-y-3">
               {debits.map((item: PayrollItem) => (
-                <div key={item.id} className="flex items-center justify-between py-2 border-b border-slate-700 last:border-0">
+                <div key={item.id} className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-slate-700 last:border-0">
                   <div>
-                    <p className="text-white font-medium">{item.description}</p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-gray-900 dark:text-white font-medium">{item.description}</p>
+                    <p className="text-xs text-gray-500 dark:text-slate-400">
                       {item.calculation_type === 'fixed'
                         ? `Valor fixo: ${formatCurrency(Number(item.amount))}`
                         : `${item.percentage}% ${item.amount > 0 ? `de ${formatCurrency(Number(item.amount))}` : 'do salário base'}`
@@ -169,8 +169,8 @@ export default function PayrollDetail() {
                   <p className="text-red-400 font-semibold">{formatCurrency(Number(item.calculated_amount))}</p>
                 </div>
               ))}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-600">
-                <p className="text-white font-semibold">Total Débitos</p>
+              <div className="flex items-center justify-between pt-2 border-t border-gray-300 dark:border-slate-600">
+                <p className="text-gray-900 dark:text-white font-semibold">Total Débitos</p>
                 <p className="text-red-400 font-bold text-lg">{formatCurrency(Number(payroll.total_debit || 0))}</p>
               </div>
             </div>
@@ -179,31 +179,27 @@ export default function PayrollDetail() {
       </div>
 
       <div className="card mt-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Resumo</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Resumo</h3>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div>
-            <p className="text-sm text-slate-400">Status</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400">Status</p>
             <span className={`status-badge ${payroll.payment_status === 'paid' ? 'status-active' : payroll.payment_status === 'canceled' ? 'status-inactive' : 'status-pending'}`}>
               {payroll.payment_status === 'paid' ? 'Pago' : payroll.payment_status === 'canceled' ? 'Cancelado' : 'Pendente'}
             </span>
           </div>
           <div>
-            <p className="text-sm text-slate-400">Data Pagamento</p>
-            <p className="text-white">{payroll.payment_date ? formatDate(payroll.payment_date) : '-'}</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400">Data Pagamento</p>
+            <p className="text-gray-900 dark:text-white">{payroll.payment_date ? formatDate(payroll.payment_date) : '-'}</p>
           </div>
           <div>
-            <p className="text-sm text-slate-400">INSS</p>
-            <p className="text-white">{formatCurrency(Number(payroll.inss))}</p>
-          </div>
-          <div>
-            <p className="text-sm text-slate-400">IRRF</p>
-            <p className="text-white">{formatCurrency(Number(payroll.irrf))}</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400">FGTS</p>
+            <p className="text-gray-900 dark:text-white">{formatCurrency(Number(payroll.fgts))}</p>
           </div>
         </div>
         {payroll.observations && (
           <div className="mt-4">
-            <p className="text-sm text-slate-400 mb-1">Observações</p>
-            <p className="text-white">{payroll.observations}</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mb-1">Observações</p>
+            <p className="text-gray-900 dark:text-white">{payroll.observations}</p>
           </div>
         )}
       </div>

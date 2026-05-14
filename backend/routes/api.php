@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\EmployeePayrollItemController;
+use App\Http\Controllers\Api\UserController;
 
 
 
@@ -104,4 +105,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/employee-payroll-items/by-employee/{employeeId}', [EmployeePayrollItemController::class, 'byEmployee']);
     Route::patch('/employee-payroll-items/{id}/toggle-active', [EmployeePayrollItemController::class, 'toggleActive']);
     Route::apiResource('/employee-payroll-items', EmployeePayrollItemController::class);
+
+    Route::apiResource('/users', UserController::class);
 });

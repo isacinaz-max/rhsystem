@@ -9,3 +9,5 @@ mysql_data/
 dist/
 build/
 .phpunit.result.cache
+*.exe
+instalador xamp/

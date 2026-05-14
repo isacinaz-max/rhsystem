@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Eye, CheckCircle, FileText } from 'lucide-react'
+import { Eye, CheckCircle, FileText, Trash2 } from 'lucide-react'
 import DataTable from '../ui/DataTable'
 import { Payroll } from '../../types'
 import { formatCurrency, formatMonthYear } from '../../utils/formatters'
@@ -11,9 +11,10 @@ interface PayrollTableProps {
   onPageChange?: (page: number) => void
   onMarkAsPaid?: (id: number) => void
   onGeneratePdf?: (id: number) => void
+  onDelete?: (id: number) => void
 }
 
-export default function PayrollTable({ payrolls, loading, meta, onPageChange, onMarkAsPaid, onGeneratePdf }: PayrollTableProps) {
+export default function PayrollTable({ payrolls, loading, meta, onPageChange, onMarkAsPaid, onGeneratePdf, onDelete }: PayrollTableProps) {
   const navigate = useNavigate()
 
   const columns = [
@@ -78,6 +79,11 @@ export default function PayrollTable({ payrolls, loading, meta, onPageChange, on
           {onGeneratePdf && (
             <button onClick={() => onGeneratePdf(item.id)} className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white" title="Download PDF">
               <FileText className="w-4 h-4" />
+            </button>
+          )}
+          {onDelete && (
+            <button onClick={() => onDelete(item.id)} className="p-1.5 rounded-lg hover:bg-slate-800 text-red-400 hover:text-red-300" title="Excluir">
+              <Trash2 className="w-4 h-4" />
             </button>
           )}
         </div>

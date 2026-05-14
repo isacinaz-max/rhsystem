@@ -42,8 +42,8 @@ class PayrollController extends Controller
         }
         $this->authorize('view', $payroll);
 
-        $detail = $this->calculationService->getPayrollDetail($payroll);
-        return $this->success($detail);
+        $payroll->load(['items', 'employee.department', 'employee.position']);
+        return $this->success($payroll);
     }
 
     public function destroy(int $id): JsonResponse
@@ -63,6 +63,7 @@ class PayrollController extends Controller
 
         $data = $request->validate([
             'employee_id' => 'nullable|integer|exists:employees,id',
+            'company_id' => 'nullable|integer|exists:companies,id',
             'reference_month' => 'required|integer|between:1,12',
             'reference_year' => 'required|integer|min:2020',
         ]);
@@ -72,7 +73,11 @@ class PayrollController extends Controller
             return $this->success($payroll, 'Holerite gerado com sucesso', 201);
         }
 
-        $payrolls = $this->payrollService->generateForAll($data['reference_month'], $data['reference_year']);
+        $payrolls = $this->payrollService->generateForAll(
+            $data['reference_month'],
+            $data['reference_year'],
+            $data['company_id'] ?? null
+        );
         return $this->success($payrolls, 'Folha gerada com sucesso', 201);
     }
 

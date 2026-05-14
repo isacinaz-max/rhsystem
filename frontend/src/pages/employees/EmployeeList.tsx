@@ -58,6 +58,15 @@ export default function EmployeeList() {
   }
 
   const columns = [
+    {
+      key: 'photo',
+      header: '',
+      render: (item: Employee) => (
+        item.photo_url
+          ? <img src={item.photo_url} alt={item.name} className="w-9 h-9 rounded-full object-cover bg-slate-700" />
+          : <div className="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center text-xs text-slate-400 font-medium">{item.name.charAt(0).toUpperCase()}</div>
+      ),
+    },
     { key: 'name', header: 'Nome' },
     { key: 'cpf', header: 'CPF', render: (item: Employee) => item.cpf ? formatCPF(item.cpf) : '-' },
     { key: 'position', header: 'Cargo', render: (item: Employee) => item.position?.name || '-' },
@@ -131,6 +140,11 @@ export default function EmployeeList() {
       <Modal open={!!viewEmployee} onClose={() => setViewEmployee(null)} title="Detalhes do Funcionário" size="lg">
         {viewEmployee && (
           <div className="space-y-4">
+            {viewEmployee.photo_url && (
+              <div className="flex justify-center mb-4">
+                <img src={viewEmployee.photo_url} alt={viewEmployee.name} className="w-24 h-24 rounded-full object-cover bg-slate-700" />
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-4">
               <div><p className="text-sm text-slate-400">Nome</p><p className="text-white font-medium">{viewEmployee.name}</p></div>
               <div><p className="text-sm text-slate-400">CPF</p><p className="text-white">{viewEmployee.cpf ? formatCPF(viewEmployee.cpf) : '-'}</p></div>

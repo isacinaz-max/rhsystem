@@ -13,21 +13,6 @@ use Illuminate\Support\Facades\DB;
 
 class PayrollService
 {
-    private const INSS_BRACKETS = [
-        ['limit' => 1412.00, 'rate' => 0.075],
-        ['limit' => 2666.68, 'rate' => 0.09],
-        ['limit' => 4000.03, 'rate' => 0.12],
-        ['limit' => 7786.02, 'rate' => 0.14],
-    ];
-
-    private const IRRF_BRACKETS = [
-        ['limit' => 2112.00, 'rate' => 0.0, 'deduction' => 0],
-        ['limit' => 2826.65, 'rate' => 0.075, 'deduction' => 158.40],
-        ['limit' => 3751.05, 'rate' => 0.15, 'deduction' => 370.40],
-        ['limit' => 4664.68, 'rate' => 0.225, 'deduction' => 651.73],
-        ['limit' => PHP_FLOAT_MAX, 'rate' => 0.275, 'deduction' => 884.96],
-    ];
-
     public function __construct(
         private PayrollRepository $payrollRepository,
         private PayrollCalculationService $calculationService
@@ -57,27 +42,31 @@ class PayrollService
             $data['reference_year']
         );
 
-        $grossSalary = $calculation['base_salary'];
-        $inss = $this->calculateINSS($grossSalary);
-        $irrfBase = $grossSalary - $inss;
-        $irrf = $this->calculateIRRF($irrfBase);
-        $fgts = $this->calculateFGTS($grossSalary);
-
         DB::beginTransaction();
         try {
+            $existing = $this->payrollRepository->findByEmployeeAndPeriod(
+                $employee->id,
+                $data['reference_month'],
+                $data['reference_year']
+            );
+            if ($existing) {
+                $existing->items()->delete();
+                $existing->delete();
+            }
+
             $payroll = $this->payrollRepository->create([
                 'employee_id' => $employee->id,
                 'company_id' => $employee->company_id,
                 'competence' => $calculation['competence'],
                 'reference_month' => $calculation['reference_month'],
                 'reference_year' => $calculation['reference_year'],
-                'base_salary' => $grossSalary,
+                'base_salary' => $calculation['base_salary'],
                 'total_credit' => $calculation['total_credit'],
                 'total_debit' => $calculation['total_debit'],
                 'net_salary' => $calculation['net_salary'],
-                'inss' => $inss,
-                'irrf' => $irrf,
-                'fgts' => $fgts,
+                'inss' => $calculation['inss'],
+                'irrf' => $calculation['irrf'],
+                'fgts' => $calculation['fgts'],
                 'status' => 'pendente',
                 'payment_status' => 'pending',
             ]);
@@ -94,9 +83,13 @@ class PayrollService
         }
     }
 
-    public function generateForAll(int $month, int $year): array
+    public function generateForAll(int $month, int $year, ?int $companyId = null): array
     {
-        $employees = Employee::where('status', 'ativo')->get();
+        $query = Employee::where('status', 'ativo');
+        if ($companyId) {
+            $query->where('company_id', $companyId);
+        }
+        $employees = $query->get();
         $payrolls = [];
 
         foreach ($employees as $employee) {
@@ -162,7 +155,17 @@ class PayrollService
         $payroll = $this->payrollRepository->findById($id);
         if (!$payroll) return null;
 
-        $data = ['payment_status' => $status, 'status' => $status];
+        $statusMap = [
+            'paid' => 'pago',
+            'pending' => 'pendente',
+            'canceled' => 'cancelado',
+            'processing' => 'processado',
+        ];
+
+        $data = [
+            'payment_status' => $status,
+            'status' => $statusMap[$status] ?? 'pendente',
+        ];
         if ($paymentDate) {
             $data['payment_date'] = $paymentDate;
         }
@@ -200,10 +203,19 @@ class PayrollService
                 }
             }
 
+            $salary = $payroll->base_salary;
+            $inss = $this->calculationService->calculateINSS($salary);
+            $irrf = $this->calculationService->calculateIRRF($salary - $inss);
+            $fgts = $this->calculationService->calculateFGTS($salary);
+            $netSalary = $salary + $totalCredit - $totalDebit;
+
             $payroll->update([
                 'total_credit' => $totalCredit,
                 'total_debit' => $totalDebit,
-                'net_salary' => max($totalCredit - $totalDebit, 0),
+                'net_salary' => max($netSalary, 0),
+                'inss' => $inss,
+                'irrf' => $irrf,
+                'fgts' => $fgts,
             ]);
 
             DB::commit();
@@ -212,39 +224,5 @@ class PayrollService
             DB::rollBack();
             throw $e;
         }
-    }
-
-    private function calculateINSS(float $salary): float
-    {
-        $inss = 0;
-        $previousLimit = 0;
-
-        foreach (self::INSS_BRACKETS as $bracket) {
-            if ($salary > $previousLimit) {
-                $base = min($salary, $bracket['limit']) - $previousLimit;
-                $inss += $base * $bracket['rate'];
-                $previousLimit = $bracket['limit'];
-            } else {
-                break;
-            }
-        }
-
-        return round(min($inss, $salary * 0.14), 2);
-    }
-
-    private function calculateIRRF(float $base): float
-    {
-        foreach (self::IRRF_BRACKETS as $bracket) {
-            if ($base <= $bracket['limit']) {
-                $irrf = ($base * $bracket['rate']) - $bracket['deduction'];
-                return round(max($irrf, 0), 2);
-            }
-        }
-        return 0;
-    }
-
-    private function calculateFGTS(float $salary): float
-    {
-        return round($salary * 0.08, 2);
     }
 }

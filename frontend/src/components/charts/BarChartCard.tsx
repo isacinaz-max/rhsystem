@@ -4,9 +4,10 @@ import Card from '../ui/Card'
 interface BarChartCardProps {
   title: string
   data: { name: string; value: number }[]
+  formatValue?: (value: number) => string
 }
 
-export default function BarChartCard({ title, data }: BarChartCardProps) {
+export default function BarChartCard({ title, data, formatValue }: BarChartCardProps) {
   return (
     <Card title={title}>
       <div className="h-72">
@@ -14,7 +15,7 @@ export default function BarChartCard({ title, data }: BarChartCardProps) {
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94A3B8' }} stroke="#475569" />
-            <YAxis tick={{ fontSize: 12, fill: '#94A3B8' }} stroke="#475569" />
+            <YAxis tick={{ fontSize: 12, fill: '#94A3B8' }} stroke="#475569" tickFormatter={formatValue} />
             <Tooltip
               contentStyle={{
                 backgroundColor: '#1E293B',
@@ -22,6 +23,7 @@ export default function BarChartCard({ title, data }: BarChartCardProps) {
                 borderRadius: '8px',
                 color: '#F8FAFC',
               }}
+              formatter={formatValue ? (value: number) => [formatValue(value), title] : undefined}
             />
             <Bar dataKey="value" fill="#3B82F6" radius={[4, 4, 0, 0]} />
           </BarChart>

@@ -12,6 +12,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'permissions',
         'is_active',
         'company_id',
         'employee_id',
@@ -24,6 +25,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'is_active' => 'boolean',
         'password' => 'hashed',
+        'permissions' => 'array',
     ];
     public function employee()
     {

@@ -3,6 +3,7 @@ export interface User {
   name: string
   email: string
   role: 'administrador' | 'rh' | 'gestor' | 'funcionario'
+  permissions?: string[]
   is_active: boolean
   employee_id?: number
   employee?: Employee
@@ -33,6 +34,7 @@ export interface Employee {
   hire_date?: string
   status: 'ativo' | 'afastado' | 'ferias' | 'desligado'
   photo?: string
+  photo_url?: string
   notes?: string
   department?: Department
   position?: Position
@@ -226,6 +228,8 @@ export interface DashboardCharts {
   employees_by_department: { department: string; count: number }[]
   salary_distribution: { range: string; count: number }[]
   monthly_hires: { month: number; year: number; count: number }[]
+  spending_by_department: { department: string; total: number }[]
+  spending_by_position: { position: string; total: number }[]
 }
 
 export interface PaginatedResponse<T> {

@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-white transition-colors duration-200;
+    @apply bg-white dark:bg-slate-950 text-gray-900 dark:text-white transition-colors duration-200;
   }
 }
 
@@ -13,19 +13,19 @@
     @apply px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .btn-secondary {
-    @apply px-4 py-2 bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-colors duration-200 font-medium;
+    @apply px-4 py-2 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-slate-300 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-700 transition-colors duration-200 font-medium;
   }
   .btn-danger {
     @apply px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium;
   }
   .input-field {
-    @apply w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-900 text-white placeholder-slate-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-colors duration-200;
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-colors duration-200;
   }
   .card {
-    @apply bg-slate-900 rounded-xl shadow-sm border border-slate-800 p-6;
+    @apply bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6;
   }
   .page-title {
-    @apply text-2xl font-bold text-white;
+    @apply text-2xl font-bold text-gray-900 dark:text-white;
   }
   .status-badge {
     @apply px-3 py-1 rounded-full text-sm font-medium;

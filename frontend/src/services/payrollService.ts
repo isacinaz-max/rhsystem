@@ -9,4 +9,5 @@ export const payrollService = {
   update: (id: number, data: any) => api.put(`/api/payrolls/${id}`, data),
   markAsPaid: (id: number, data?: any) => api.put(`/api/payrolls/${id}/pay`, data),
   recalculate: (id: number) => api.post(`/api/payrolls/${id}/recalculate`),
+  delete: (id: number) => api.delete(`/api/payrolls/${id}`),
 }

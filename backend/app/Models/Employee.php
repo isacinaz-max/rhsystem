@@ -8,6 +8,9 @@ use App\Traits\MultiTenant;
 class Employee extends Model
 {
     use HasFactory, SoftDeletes, Loggable, MultiTenant;
+
+    protected $appends = ['photo_url'];
+
     protected $fillable = [
         'name',
         'cpf',
@@ -76,5 +79,13 @@ class Employee extends Model
     public function payrollItems()
     {
         return $this->hasMany(EmployeePayrollItem::class);
+    }
+
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if ($this->photo) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->url($this->photo);
+        }
+        return null;
     }
 }

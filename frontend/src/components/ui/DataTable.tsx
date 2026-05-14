@@ -27,13 +27,13 @@ export default function DataTable<T>({ columns, data, loading, meta, onPageChang
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-700">
+            <tr className="border-b border-gray-200 dark:border-slate-700">
               {columns.map((col) => (
-                <th key={col.key} className="text-left px-4 py-3 text-sm font-semibold text-slate-400">
+                <th key={col.key} className="text-left px-4 py-3 text-sm font-semibold text-gray-500 dark:text-slate-400">
                   {col.header}
                 </th>
               ))}
-              {actions && <th className="text-right px-4 py-3 text-sm font-semibold text-slate-400">Ações</th>}
+              {actions && <th className="text-right px-4 py-3 text-sm font-semibold text-gray-500 dark:text-slate-400">Ações</th>}
             </tr>
           </thead>
           <tbody>
@@ -48,7 +48,7 @@ export default function DataTable<T>({ columns, data, loading, meta, onPageChang
 
   if (!data || data.length === 0) {
     return (
-      <div className="text-center py-20 text-slate-400">
+      <div className="text-center py-20 text-gray-400 dark:text-slate-400">
         <p className="text-lg font-medium">Nenhum registro encontrado</p>
       </div>
     )
@@ -69,9 +69,9 @@ export default function DataTable<T>({ columns, data, loading, meta, onPageChang
         </thead>
         <tbody>
           {data.map((item: any, index) => (
-            <tr key={item.id || index} className="border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
+            <tr key={item.id || index} className="border-b border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
               {columns.map((col) => (
-                <td key={col.key} className="px-4 py-3 text-sm text-slate-300">
+                <td key={col.key} className="px-4 py-3 text-sm text-gray-700 dark:text-slate-300">
                   {col.render ? col.render(item) : item[col.key]}
                 </td>
               ))}
@@ -86,23 +86,23 @@ export default function DataTable<T>({ columns, data, loading, meta, onPageChang
       </table>
 
       {meta && meta.last_page > 1 && (
-        <div className="flex items-center justify-between px-4 py-3 border-t border-slate-700">
-          <p className="text-sm text-slate-400">
+        <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-slate-700">
+          <p className="text-sm text-gray-500 dark:text-slate-400">
             Mostrando página {meta.current_page} de {meta.last_page} ({meta.total} registros)
           </p>
           <div className="flex items-center gap-2">
             <button
               onClick={() => onPageChange?.(meta.current_page - 1)}
               disabled={meta.current_page <= 1}
-              className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white disabled:opacity-50"
+              className="p-1 rounded hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <span className="text-sm text-slate-400">{meta.current_page}</span>
+            <span className="text-sm text-gray-500 dark:text-slate-400">{meta.current_page}</span>
             <button
               onClick={() => onPageChange?.(meta.current_page + 1)}
               disabled={meta.current_page >= meta.last_page}
-              className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white disabled:opacity-50"
+              className="p-1 rounded hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
             >
               <ChevronRight className="w-5 h-5" />
             </button>

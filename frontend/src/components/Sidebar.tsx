@@ -62,7 +62,9 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         {user && (
           <div className="px-4 py-3 border-b border-gray-200 dark:border-slate-800">
             <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user.name}</p>
-            <p className="text-xs text-gray-500 dark:text-slate-400 capitalize">{user.role}</p>
+            <p className="text-xs text-gray-500 dark:text-slate-400 capitalize">
+              {user.role} {user.company ? `- ${user.company.razao_social}` : ''}
+            </p>
           </div>
         )}
 

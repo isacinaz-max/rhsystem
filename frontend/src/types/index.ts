@@ -9,6 +9,7 @@ export interface User {
   company_id?: number
   employee_id?: number
   employee?: Employee
+  company?: Company
 }
 
 export interface Employee {

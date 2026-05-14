@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { ArrowLeft, Save, Loader2, Shield } from 'lucide-react'
+import { ArrowLeft, Save, Loader2, Shield, Building } from 'lucide-react'
 import PageContainer from '../../components/ui/PageContainer'
 import { userService } from '../../services/userService'
-import { User } from '../../types'
+import { companyService } from '../../services/companyService'
+import { useAuth } from '../../hooks/useAuth'
+import { User, Company } from '../../types'
 import toast from 'react-hot-toast'
 
 interface FormData {
@@ -14,6 +16,7 @@ interface FormData {
   role: string
   is_active: boolean
   permissions: string[]
+  company_id?: number | null
 }
 
 const permissionOptions = [
@@ -33,9 +36,11 @@ const roleOptions = [
 export default function UserForm() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user: authUser } = useAuth()
   const isEditing = !!id
   const [loading, setLoading] = useState(false)
   const [pageLoading, setPageLoading] = useState(isEditing)
+  const [companies, setCompanies] = useState<Company[]>([])
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({
     defaultValues: {
@@ -45,11 +50,18 @@ export default function UserForm() {
       role: 'funcionario',
       is_active: true,
       permissions: [],
+      company_id: null,
     }
   })
 
   const selectedPermissions = watch('permissions') || []
   const selectedRole = watch('role')
+
+  useEffect(() => {
+    if (authUser?.is_super_admin) {
+      companyService.listAll().then(res => setCompanies(res.data.data)).catch(() => {})
+    }
+  }, [authUser])
 
   function togglePermission(permission: string) {
     const current = selectedPermissions || []
@@ -62,16 +74,17 @@ export default function UserForm() {
   useEffect(() => {
     async function loadUser() {
       try {
-        const res = await userService.find(Number(id))
-        const user = res.data.data
-        reset({
-          name: user.name,
-          email: user.email,
-          password: '',
-          role: user.role,
-          is_active: user.is_active,
-          permissions: user.permissions || [],
-        })
+         const res = await userService.find(Number(id))
+         const user = res.data.data
+         reset({
+           name: user.name,
+           email: user.email,
+           password: '',
+           role: user.role,
+           is_active: user.is_active,
+           permissions: user.permissions || [],
+           company_id: user.company_id ?? null,
+         })
       } catch { toast.error('Erro ao carregar usuário') }
       finally { setPageLoading(false) }
     }
@@ -87,6 +100,7 @@ export default function UserForm() {
         role: data.role,
         is_active: data.is_active,
         permissions: data.permissions,
+        company_id: data.company_id || null,
       }
       if (data.password) payload.password = data.password
 
@@ -146,6 +160,17 @@ export default function UserForm() {
                 ))}
               </select>
             </div>
+            {authUser?.is_super_admin && (
+              <div>
+                <label className="block text-sm font-medium text-gray-500 dark:text-slate-400 mb-1">Empresa</label>
+                <select {...register('company_id', { setValueAs: (v) => v ? Number(v) : null })} className="input-field">
+                  <option value="">Selecione uma empresa...</option>
+                  {companies.map((c) => (
+                    <option key={c.id} value={c.id}>{c.razao_social}</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div className="flex items-center gap-3">
               <input type="checkbox" {...register('is_active')} className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-primary-600 focus:ring-primary-500" id="is_active" />
               <label htmlFor="is_active" className="text-sm font-medium text-gray-500 dark:text-slate-400">Usuário ativo</label>
